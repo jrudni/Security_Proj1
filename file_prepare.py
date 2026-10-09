@@ -41,7 +41,7 @@ class MerkleTree:
 
         if len(nodes) == 2:
             return Node(
-                nodes[0].data+b'+'+nodes[1].data,    # Duomenys
+                nodes[0].data+nodes[1].data,    # Duomenys
                 hash=calculate_sha256(bytes.fromhex(nodes[0].hash) + bytes.fromhex(nodes[1].hash)),
                 left=nodes[0],
                 right=nodes[1]
@@ -50,19 +50,19 @@ class MerkleTree:
         # If there are more than two nodes, split into two halves and build recursively
         left: Node = self.__build_tree_recursive(nodes[:half])
         right: Node = self.__build_tree_recursive(nodes[half:])
-        data = left.data+b'+'+right.data
+        data = left.data+right.data
 
         return Node(data, hash=calculate_sha256(bytes.fromhex(left.hash) + bytes.fromhex(right.hash)), left=left, right=right)
 
     def printTree(self):
-        self.__print_tree_rec(self.root)
+        self.__print_tree_rec(self.root, level=0)
 
-    def __print_tree_rec(self, node: Node):
+    def __print_tree_rec(self, node: Node, level: int):
         if node is None:
             return
-        print(f'Node data: {node.data}, Hash: {node.hash}')
-        self.__print_tree_rec(node.l)
-        self.__print_tree_rec(node.r)
+        print(f'Level {level}: Node data: {node.data}, Hash: {node.hash}')
+        self.__print_tree_rec(node.l, level + 1)
+        self.__print_tree_rec(node.r, level + 1)
 
 def create_manifest(merkle_tree: MerkleTree, data, chunk_count, data_chunks):
     if chunk_count != 4 or len(data_chunks) != 4:
