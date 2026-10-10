@@ -5,7 +5,7 @@ import json
 
 host = "localhost"
 
-manifest_message = {'topic': "ota/pi5/manifest", 'payload': "", 'qos': 1, 'retain': False}
+manifest_message = {'topic': "ota/pi5/manifest", 'payload': "", 'qos': 1, 'retain': True}
 
 if __name__ == "__main__":
     # Get the manifest and chunks

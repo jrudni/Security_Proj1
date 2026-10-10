@@ -1,8 +1,8 @@
 {
     "firmware_version": "1.0.0",
-    "firmware_size": 23,
+    "firmware_size": 26,
     "chunk_count": 4,
-    "merkle_root": "aeb652c6322d7144489f387fbc46c26563d9b0ac394c9ee3b3b64777c7200639",
+    "merkle_root": "972dbd71d4d2b1f562c2341c1ea63e2d6ed026fa0d79304b083af5c449966b19",
     "chunks": [
         {
             "index": 0,
