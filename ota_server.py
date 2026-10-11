@@ -45,7 +45,8 @@ if __name__ == "__main__":
     
     messages = [manifest_message]  # Start with the manifest message
 
-    # for payload in chunk_payloads[:3]: #Testing validation and integrity by sending only 3 chunks
+    #Testing validation and integrity by sending only 3 chunks
+    #for payload in chunk_payloads[:3]: 
     for payload in chunk_payloads:
         messages.append(
             {
@@ -55,8 +56,8 @@ if __name__ == "__main__":
                 'retain': False
             }
         )
-
-        # if payload["chunk_index"] == 1: #Testing validation by sending a duplicate of chunk 1
+        #Testing validation by sending a duplicate of chunk 1
+        # if payload["chunk_index"] == 1: 
         #     messages.append(
         #         {
         #             'topic': "ota/pi5/chunks",
