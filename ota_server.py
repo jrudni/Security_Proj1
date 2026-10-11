@@ -5,7 +5,7 @@ import json
 
 host = "localhost"
 
-manifest_message = {'topic': "ota/pi5/manifest", 'payload': "", 'qos': 1, 'retain': False}
+manifest_message = {'topic': "ota/pi5/manifest", 'payload': "", 'qos': 1, 'retain': True}
 
 if __name__ == "__main__":
     # Get the manifest and chunks
@@ -28,6 +28,13 @@ if __name__ == "__main__":
     manifest_message['payload'] = json.dumps(manifest).encode('utf-8')
     chunk_payloads = []
     for i, chunk in enumerate(data_chunks):
+        chunk_to_send = chunk
+        #TESTING TAMPERED CHUNK by modifying 1 byte in chunk 1
+        # if i==1:
+        #     chunk_to_send = bytes([chunk[0] ^ 1]) + chunk[1:]
+        #     print(f"Test: Sending TAMPERED chunk 1")
+
+        # print(f"Publishing chunk {i}, tampered={chunk_to_send != chunk}")
         chunk_payloads.append(
             {
                 "firmware_version": manifest["firmware_version"],
@@ -38,6 +45,7 @@ if __name__ == "__main__":
     
     messages = [manifest_message]  # Start with the manifest message
 
+    # for payload in chunk_payloads[:3]: #Testing validation and integrity by sending only 3 chunks
     for payload in chunk_payloads:
         messages.append(
             {
@@ -47,7 +55,15 @@ if __name__ == "__main__":
                 'retain': False
             }
         )
+
+        # if payload["chunk_index"] == 1: #Testing validation by sending a duplicate of chunk 1
+        #     messages.append(
+        #         {
+        #             'topic': "ota/pi5/chunks",
+        #             'payload': json.dumps(payload).encode('utf-8'),
+        #             'qos': 1,
+        #             'retain': False
+        #         }
+        #     )    
     
     publish.multiple(messages, hostname=host)
-    
-
