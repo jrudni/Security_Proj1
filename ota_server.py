@@ -10,6 +10,11 @@ manifest_message = {'topic': "ota/pi5/manifest", 'payload': "", 'qos': 1, 'retai
 if __name__ == "__main__":
     # Get the manifest and chunks
     data = file_prepare.read_file(file_prepare.file_name)
+
+    # ATTACK 2: simulate malicious firmware modification
+    # data = data + b"\nMALICIOUS MODIFICATION FOR ATTACK 2\n"
+    # print("ATTACK 2: firmware modified in memory")
+
     chunk_count = 4  # Number of chunks to split the data into
     data_chunks = file_prepare.split_data(data, chunk_count)
 
@@ -28,8 +33,8 @@ if __name__ == "__main__":
     manifest_message['payload'] = json.dumps(manifest).encode('utf-8')
     chunk_payloads = []
     for i, chunk in enumerate(data_chunks):
-        chunk_to_send = chunk
-        #TESTING TAMPERED CHUNK by modifying 1 byte in chunk 1
+        # chunk_to_send = chunk
+        # #TESTING TAMPERED CHUNK by modifying 1 byte in chunk 1
         # if i==1:
         #     chunk_to_send = bytes([chunk[0] ^ 1]) + chunk[1:]
         #     print(f"Test: Sending TAMPERED chunk 1")
@@ -46,7 +51,7 @@ if __name__ == "__main__":
     messages = [manifest_message]  # Start with the manifest message
 
     #Testing validation and integrity by sending only 3 chunks
-    #for payload in chunk_payloads[:3]: 
+    # for payload in chunk_payloads[:3]: 
     for payload in chunk_payloads:
         messages.append(
             {
@@ -57,14 +62,14 @@ if __name__ == "__main__":
             }
         )
         #Testing validation by sending a duplicate of chunk 1
-        # if payload["chunk_index"] == 1: 
-        #     messages.append(
-        #         {
-        #             'topic': "ota/pi5/chunks",
-        #             'payload': json.dumps(payload).encode('utf-8'),
-        #             'qos': 1,
-        #             'retain': False
-        #         }
-        #     )    
+        if payload["chunk_index"] == 1: 
+            messages.append(
+                {
+                    'topic': "ota/pi5/chunks",
+                    'payload': json.dumps(payload).encode('utf-8'),
+                    'qos': 1,
+                    'retain': False
+                }
+            )    
     
     publish.multiple(messages, hostname=host)

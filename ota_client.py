@@ -79,7 +79,7 @@ class OTAClient:
         elif msg.topic == self.chunk_topic:
             self.handle_chunk(payload)
 
-        #Validates and stores the manifest
+    #Validates and stores the manifest
     def handle_manifest(self,payload):
         if not self.validate_manifest(payload):
             self.reject("Invalid manifest or chunk data")
@@ -99,7 +99,7 @@ class OTAClient:
 
 
 
-        #Decodes and then validates and stores each chunk
+    #Decodes and then validates and stores each chunk
     def handle_chunk(self,payload):
         firmware_ver = payload.get("firmware_version")
         index = payload.get("chunk_index")
@@ -117,7 +117,7 @@ class OTAClient:
             self.reject("Invalid Chunk Index")
             return
         
-            #checks whether the chunk index is in the manifest indexes
+        #checks whether the chunk index is in the manifest indexes
         manifest_indexes = {
             item["index"] for item in self.manifest["chunks"]
         }
@@ -139,7 +139,7 @@ class OTAClient:
             self.reject(f"Chunk {index} is empty")
             return
 
-            #Handles duplicate indexes
+        #Handles duplicate indexes
         if index in self.chunks:
             if self.chunks[index] == chunk:
                 print(f"Duplicate chunk {index} ignored.")
