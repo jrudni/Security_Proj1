@@ -1,5 +1,5 @@
 import paho.mqtt.publish as publish
-import file_prepare
+import run
 import base64
 import json
 
@@ -9,22 +9,22 @@ manifest_message = {'topic': "ota/pi5/manifest", 'payload': "", 'qos': 1, 'retai
 
 if __name__ == "__main__":
     # Get the manifest and chunks
-    data = file_prepare.read_file(file_prepare.file_name)
+    data = run.read_file(run.file_name)
 
     # ATTACK 2: simulate malicious firmware modification
     # data = data + b"\nMALICIOUS MODIFICATION FOR ATTACK 2\n"
     # print("ATTACK 2: firmware modified in memory")
 
     chunk_count = 4  # Number of chunks to split the data into
-    data_chunks = file_prepare.split_data(data, chunk_count)
+    data_chunks = run.split_data(data, chunk_count)
 
     for i, chunk in enumerate(data_chunks):
         with open(f"chunk_{i}.bin", "wb") as f:
             f.write(chunk)
 
-    merkle_tree = file_prepare.MerkleTree(data_chunks)
+    merkle_tree = run.MerkleTree(data_chunks)
 
-    manifest = file_prepare.create_manifest(merkle_tree, data, chunk_count, data_chunks)
+    manifest = run.create_manifest(merkle_tree, data, chunk_count, data_chunks)
 
     with open("manifest.json", "w") as f:
         json.dump(manifest, f, indent=4)
