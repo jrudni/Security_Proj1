@@ -80,3 +80,26 @@ def create_manifest(merkle_tree: MerkleTree, data, chunk_count, data_chunks):
         ]
     }
     return manifest
+
+def main():
+    import argparse
+    import subprocess
+    import sys
+    from pathlib import Path
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("role", choices=["server", "client"])
+    args = parser.parse_args()
+
+    project_directory = Path(__file__).resolve().parent
+    script = project_directory / f"ota_{args.role}.py"
+
+    result = subprocess.run(
+        [sys.executable, "-u", str(script)],
+        cwd=project_directory,
+    )
+    return result.returncode
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
